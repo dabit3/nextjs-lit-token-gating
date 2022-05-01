@@ -1,8 +1,60 @@
+import { useState } from 'react'
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
+import LitJsSdk from 'lit-js-sdk'
+import cookieCutter from 'cookie-cutter'
+
+const accessControlConditions = [
+  {
+    contractAddress: '0x25ed58c027921E14D86380eA2646E3a1B5C55A8b',
+    standardContractType: 'ERC721',
+    chain: 'ethereum',
+    method: 'balanceOf',
+    parameters: [
+      ':userAddress'
+    ],
+    returnValueTest: {
+      comparator: '>',
+      value: '0'
+    }
+  }
+]
+
+const randomUrlPath = "/" + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+
+const resourceId = {
+  baseUrl: 'http://localhost:3000',
+  path: randomUrlPath,
+  orgId: "",
+  role: "",
+  extraData: ""
+}
 
 export default function Home() {
+  const [connected, setConnected] = useState()
+
+  async function connect() {
+    const client = new LitJsSdk.LitNodeClient({ alertWhenUnauthorized: false })
+    await client.connect()
+    const authSig = await LitJsSdk.checkAndSignAuthMessage({chain: 'ethereum'})
+
+    await client.saveSigningCondition({ accessControlConditions, chain: 'ethereum', authSig, resourceId })
+    try {
+      const authSig = await LitJsSdk.checkAndSignAuthMessage({chain: 'ethereum'})
+      const jwt = await client.getSignedToken({
+        accessControlConditions, chain: 'ethereum', authSig, resourceId: resourceId
+      })
+  
+      cookieCutter.set('jwt', jwt)
+
+    } catch (err) {
+      console.log('error: ', err)
+    }
+    setConnected(true)
+
+  }
+
   return (
     <div className={styles.container}>
       <Head>
@@ -11,47 +63,11 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className={styles.card}
-          >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
+      <h1>Developer DAO Access</h1>
+      {
+        !connected && <button onClick={connect}>Connect</button>
+      }
+     
       <footer className={styles.footer}>
         <a
           href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"

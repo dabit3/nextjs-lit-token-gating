@@ -1,34 +1,38 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+This is a minimal example of how to token-gate a Next.js page using [Lit Protocol](https://developer.litprotocol.com/) using `getServerSideProps`.
 
-## Getting Started
 
-First, run the development server:
+This token gates a `/protected` page checking to see if the user has a [Devs for Revolution](https://etherscan.io/address/0x25ed58c027921e14d86380ea2646e3a1b5c55a8b) ERC721 token.
 
-```bash
-npm run dev
-# or
-yarn dev
+To run this example:
+
+1. Clone the repo
+
+```sh
+git clone git@github.com:dabit3/nextjs-lit-token-gating.git
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Update the `accessControlConditions` with the contract address of the NFT you'd like to use:
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+```javascript
+const accessControlConditions = [
+  {
+    contractAddress: '0x25ed58c027921E14D86380eA2646E3a1B5C55A8b',
+    standardContractType: 'ERC721',
+    chain: 'ethereum',
+    method: 'balanceOf',
+    parameters: [
+      ':userAddress'
+    ],
+    returnValueTest: {
+      comparator: '>',
+      value: '0'
+    }
+  }
+]
+```
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+3. Start the app
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+```sh
+npm run dev
+```
