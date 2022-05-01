@@ -5,10 +5,14 @@ This token gates a `/protected` page checking to see if the user has a [Devs for
 
 To run this example:
 
-1. Clone the repo
+1. Clone the repo and install dependencies
 
 ```sh
 git clone git@github.com:dabit3/nextjs-lit-token-gating.git
+
+cd nextjs-lit-token-gating
+
+npm install
 ```
 
 2. Update the `accessControlConditions` with the contract address of the NFT you'd like to use:

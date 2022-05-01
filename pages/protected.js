@@ -31,7 +31,7 @@ export async function getServerSideProps({ req, res}) {
   console.log({ payload })
   return {
     props: {
-      authorized: true
+      authorized: verified ? true : false
     },
   }
 }

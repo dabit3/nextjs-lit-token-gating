@@ -41,7 +41,6 @@ export default function Home() {
 
     await client.saveSigningCondition({ accessControlConditions, chain: 'ethereum', authSig, resourceId })
     try {
-      const authSig = await LitJsSdk.checkAndSignAuthMessage({chain: 'ethereum'})
       const jwt = await client.getSignedToken({
         accessControlConditions, chain: 'ethereum', authSig, resourceId: resourceId
       })
