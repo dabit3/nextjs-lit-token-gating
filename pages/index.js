@@ -3,7 +3,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import LitJsSdk from 'lit-js-sdk'
-import cookieCutter from 'cookie-cutter'
+import Cookies from 'js-cookie'
 import { UUIDContext } from '../context'
 
 const accessControlConditions = [
@@ -44,8 +44,8 @@ export default function Home() {
     try {
       const jwt = await client.getSignedToken({
         accessControlConditions, chain: 'ethereum', authSig, resourceId: resourceId
-      })  
-      cookieCutter.set('lit-auth', jwt)
+      })
+      Cookies.set('lit-auth', jwt, { expires: 1 })
 
     } catch (err) {
       console.log('error: ', err)

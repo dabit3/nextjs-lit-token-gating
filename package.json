@@ -9,8 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "cookie-cutter": "^0.2.0",
     "cookies": "^0.8.0",
+    "js-cookie": "^3.0.1",
     "lit-js-sdk": "^1.1.173",
     "next": "12.1.5",
     "next-auth": "^4.3.4",
