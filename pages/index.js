@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import LitJsSdk from 'lit-js-sdk'
 import cookieCutter from 'cookie-cutter'
+import { PathContext } from '../context'
 
 const accessControlConditions = [
   {
@@ -21,20 +22,20 @@ const accessControlConditions = [
   }
 ]
 
-const randomUrlPath = "/" + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-
-const resourceId = {
-  baseUrl: 'http://localhost:3000',
-  path: randomUrlPath,
-  orgId: "",
-  role: "",
-  extraData: ""
-}
 
 export default function Home() {
   const [connected, setConnected] = useState()
+  const { path } = useContext(PathContext)
 
   async function connect() {
+    const resourceId = {
+      baseUrl: 'http://localhost:3000',
+      path,
+      orgId: "",
+      role: "",
+      extraData: ""
+    }
+
     const client = new LitJsSdk.LitNodeClient({ alertWhenUnauthorized: false })
     await client.connect()
     const authSig = await LitJsSdk.checkAndSignAuthMessage({chain: 'ethereum'})
