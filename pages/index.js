@@ -4,7 +4,7 @@ import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import LitJsSdk from 'lit-js-sdk'
 import cookieCutter from 'cookie-cutter'
-import { PathContext } from '../context'
+import { UUIDContext } from '../context'
 
 const accessControlConditions = [
   {
@@ -25,15 +25,15 @@ const accessControlConditions = [
 
 export default function Home() {
   const [connected, setConnected] = useState()
-  const { path } = useContext(PathContext)
+  const { id } = useContext(UUIDContext)
 
   async function connect() {
     const resourceId = {
       baseUrl: 'http://localhost:3000',
-      path,
+      path: '/protected',
       orgId: "",
       role: "",
-      extraData: ""
+      extraData: id
     }
 
     const client = new LitJsSdk.LitNodeClient({ alertWhenUnauthorized: false })
@@ -44,9 +44,8 @@ export default function Home() {
     try {
       const jwt = await client.getSignedToken({
         accessControlConditions, chain: 'ethereum', authSig, resourceId: resourceId
-      })
-  
-      cookieCutter.set('jwt', jwt)
+      })  
+      cookieCutter.set('lit-auth', jwt)
 
     } catch (err) {
       console.log('error: ', err)

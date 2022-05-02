@@ -1,6 +1,5 @@
 import Cookies from 'cookies'
 import LitJsSdk from 'lit-js-sdk'
-import { useRouter } from 'next/router'
 
 export default function Protected(props) {
   if (!props.authorized) {
@@ -16,10 +15,9 @@ export default function Protected(props) {
 }
 
 export async function getServerSideProps({ req, res, query }) {
-  const { path } = query
-  console.log('path: ', path)
+  const { id } = query
   const cookies = new Cookies(req, res)
-  const jwt = cookies.get('jwt')
+  const jwt = cookies.get('lit-auth')
   if (!jwt) {
     return {
       props: {
@@ -28,13 +26,12 @@ export async function getServerSideProps({ req, res, query }) {
     }
   }
 
-  const { verified, header, payload } = LitJsSdk.verifyJwt({jwt})
-  console.log({ verified })
-  console.log({ header })
-  console.log({ payload })
+  const { verified, payload } = LitJsSdk.verifyJwt({ jwt })
+
   if (
     payload.baseUrl !== "http://localhost:3000"
-    || payload.path !== path
+    || payload.path !== '/protected'
+    || payload.extraData !== id
   ) {
     return {
       props: {

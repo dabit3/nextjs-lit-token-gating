@@ -1,4 +1,4 @@
 import React from 'react'
-const PathContext = React.createContext()
+const UUIDContext = React.createContext()
 
-export { PathContext }
+export { UUIDContext }

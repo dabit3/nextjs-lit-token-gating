@@ -1,15 +1,15 @@
 import '../styles/globals.css'
 import Link from 'next/link'
-import { PathContext } from '../context'
-import { useRouter } from 'next/router';
+import { UUIDContext } from '../context'
+import { useRouter } from 'next/router'
+import { v4 as uuid } from 'uuid';
 
-const randomPath = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-console.log({ randomPath })
+const id = uuid()
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter();
   function navigate() {
-    router.push(`/protected?path=${randomPath}`)
+    router.push(`/protected?id=${id}`)
   }
   return (
     <div>
@@ -23,11 +23,11 @@ function MyApp({ Component, pageProps }) {
           Protected
         </a>
       </nav>
-      <PathContext.Provider value={{
-        path: randomPath
+      <UUIDContext.Provider value={{
+        id
       }}>
         <Component {...pageProps} />
-      </PathContext.Provider>
+      </UUIDContext.Provider>
     </div>
   )
 }
